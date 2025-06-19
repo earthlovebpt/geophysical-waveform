@@ -4,6 +4,7 @@ import time
 import random
 import numpy as np
 from tqdm import tqdm
+import wandb
 
 import torch
 import torch.nn as nn
@@ -38,6 +39,7 @@ def cleanup():
     return
 
 def main(cfg):
+    run = wandb.init(project="geophysical-waveform")
 
     # ========== Datasets / Dataloaders ==========
     if cfg.local_rank == 0:
@@ -144,6 +146,12 @@ def main(cfg):
                         i+1,
                         len(train_dl)+1,
                     ))
+                    run.log({
+                        "train_loss": train_loss,
+                        "val_loss": val_loss,
+                        "step": epoch*len(train_dl)+i,
+                        "epoch": epoch,
+                    })
 
         # ========== Valid ==========
         model.eval()
@@ -198,7 +206,7 @@ def main(cfg):
         dist.broadcast(stop_train, src=0)
         if stop_train.item() == 1:
             return
-
+    run.finish()
     return
 
 

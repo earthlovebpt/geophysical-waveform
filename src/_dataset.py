@@ -22,7 +22,7 @@ class CustomDataset(torch.utils.data.Dataset):
     def load_metadata(self, ):
 
         # Select rows
-        df= pd.read_csv("/kaggle/input/openfwi-preprocessed-72x72/folds.csv")
+        df= pd.read_csv("/content/drive/MyDrive/Hackathons/kaggle/geophysical-waveform/folds.csv")
         if self.cfg.subsample is not None:
             df= df.groupby(["dataset", "fold"]).head(self.cfg.subsample)
 
@@ -39,12 +39,13 @@ class CustomDataset(torch.utils.data.Dataset):
 
         for idx, row in tqdm(df.iterrows(), total=len(df), disable=self.cfg.local_rank != 0):
             row= row.to_dict()
-
+            path1 = "/content/drive/MyDrive/Hackathons/kaggle/geophysical-waveform/openfwi_float16_1/"
+            path2 = "/content/drive/MyDrive/Hackathons/kaggle/geophysical-waveform/openfwi_float16_2/"
             # Hacky way to get exact file name
-            p1 = os.path.join("/kaggle/input/open-wfi-1/openfwi_float16_1/", row["data_fpath"])
-            p2 = os.path.join("/kaggle/input/open-wfi-1/openfwi_float16_1/", row["data_fpath"].split("/")[0], "*", row["data_fpath"].split("/")[-1])
-            p3 = os.path.join("/kaggle/input/open-wfi-2/openfwi_float16_2/", row["data_fpath"])
-            p4 = os.path.join("/kaggle/input/open-wfi-2/openfwi_float16_2/", row["data_fpath"].split("/")[0], "*", row["data_fpath"].split("/")[-1])
+            p1 = os.path.join(path1, row["data_fpath"])
+            p2 = os.path.join(path1, row["data_fpath"].split("/")[0], "*", row["data_fpath"].split("/")[-1])
+            p3 = os.path.join(path2, row["data_fpath"])
+            p4 = os.path.join(path2, row["data_fpath"].split("/")[0], "*", row["data_fpath"].split("/")[-1])
             farr= glob.glob(p1) + glob.glob(p2) + glob.glob(p3) + glob.glob(p4)
 
             # Map to lbl fpath
