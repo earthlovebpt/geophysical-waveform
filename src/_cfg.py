@@ -18,3 +18,4 @@ cfg.batch_size_val = 16
 
 cfg.early_stopping = {"patience": 3, "streak": 0}
 cfg.logging_steps = 100
+cfg.tensor_dtype = torch.bfloat16

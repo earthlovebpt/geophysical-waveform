@@ -116,7 +116,7 @@ def main(cfg):
                 x = x.to(cfg.local_rank)
                 y = y.to(cfg.local_rank)
 
-                with autocast(cfg.device.type):
+                with autocast(cfg.device.type, dtype=cfg.tensor_dtype):
                     logits = model(x)
 
                 loss = criterion(logits, y)
@@ -162,7 +162,7 @@ def main(cfg):
                 x = x.to(cfg.local_rank)
                 y = y.to(cfg.local_rank)
 
-                with autocast(cfg.device.type):
+                with autocast(cfg.device.type, dtype=cfg.tensor_dtype):
                     if ema_model is not None:
                         out = ema_model.module(x)
                     else:
